@@ -9,7 +9,7 @@ export default function NeynarScoreChecker() {
 
   const checkScore = async () => {
     if (!input.trim()) {
-      setError('Masukkan FID atau username');
+      setError('Please enter FID or username');
       return;
     }
 
@@ -18,6 +18,7 @@ export default function NeynarScoreChecker() {
     setResult(null);
 
     try {
+      // Menentukan apakah input adalah FID (angka) atau username
       const isFid = /^\d+$/.test(input.trim());
       const endpoint = isFid 
         ? `https://api.neynar.com/v2/farcaster/user/bulk?fids=${input.trim()}`
@@ -64,6 +65,7 @@ export default function NeynarScoreChecker() {
     const text = `🎯 Neynar Score saya: ${scorePercentage}%\n\n@${result.username} | FID: ${result.fid}\n\nCek score kamu di:`;
     const url = window.location.href;
     
+    // Gunakan Farcaster intent untuk share (tetap dalam app)
     const shareUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(url)}`;
     window.open(shareUrl, '_blank');
   };
@@ -85,11 +87,13 @@ export default function NeynarScoreChecker() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800 p-4">
       <div className="max-w-md mx-auto pt-8">
+        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Neynar Score</h1>
           <p className="text-purple-200">Cek kualitas akun Farcaster kamu</p>
         </div>
 
+        {/* Search Box */}
         {!result && (
           <div className="bg-white rounded-2xl shadow-2xl p-6 mb-4">
             <div className="mb-4">
@@ -125,8 +129,10 @@ export default function NeynarScoreChecker() {
           </div>
         )}
 
+        {/* Result Card */}
         {result && (
           <div className="bg-white rounded-2xl shadow-2xl overflow-hidden animate-fadeIn">
+            {/* Profile Header */}
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white text-center">
               <img
                 src={result.pfpUrl}
@@ -137,6 +143,7 @@ export default function NeynarScoreChecker() {
               <p className="text-purple-200">@{result.username}</p>
             </div>
 
+            {/* Score Display */}
             <div className="p-6">
               <div className="text-center mb-6">
                 <div className="mb-2">
@@ -150,6 +157,7 @@ export default function NeynarScoreChecker() {
                 </div>
               </div>
 
+              {/* Stats */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className="bg-gray-50 p-4 rounded-xl text-center">
                   <div className="flex items-center justify-center mb-1">
@@ -183,6 +191,7 @@ export default function NeynarScoreChecker() {
                 </div>
               </div>
 
+              {/* Action Buttons */}
               <div className="space-y-3">
                 <button
                   onClick={handleShare}
@@ -207,6 +216,7 @@ export default function NeynarScoreChecker() {
           </div>
         )}
 
+        {/* Info */}
         <div className="text-center text-white text-sm mt-6 opacity-80">
           <p>Score diupdate setiap minggu</p>
           <p className="mt-1">Powered by Neynar API</p>
