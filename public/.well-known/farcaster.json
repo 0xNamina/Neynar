@@ -11,12 +11,12 @@
     "iconUrl": "https://neynar.vercel.app/icon.png",
     "splashImageUrl": "https://neynar.vercel.app/splash.png",
     "splashBackgroundColor": "#6200EA",
-    "subtitle": "Check your Farcaster account quality score",
+    "subtitle": "Check your Farcaster score",
     "description": "Quickly check your Neynar user score on Farcaster",
     "primaryCategory": "developer-tools",
     "tags": ["neynar", "farcaster", "score", "analytics"],
-    "tagline": "Check Your Farcaster Score",
-    "ogTitle": "My Neynar Score",
+    "tagline": "Check Your Score",
+    "ogTitle": "Neynar Score",
     "ogDescription": "Check your Farcaster account quality score with Neynar Score Checker",
     "ogImageUrl": "https://neynar.vercel.app/og-image.png"
   }
