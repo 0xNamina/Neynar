@@ -18,5 +18,10 @@
     "ogDescription": "Check your Farcaster account quality score with Neynar Score Checker",
     "ogImageUrl": "https://neynar.vercel.app/og-image.png",
     "castShareUrl": "https://neynar.vercel.app"
+  },
+  "accountAssociation": {
+    "header": "eyJmaWQiOjI1NTIxNiwidHlwZSI6ImF1dGgiLCJrZXkiOiIweDg4MTNiM0U5ZjlEQzg1YThhY2MzYkQwQzA1MTM5ZTVGRTVBRTcyM2YifQ",
+    "payload": "eyJkb21haW4iOiJuZXluYXIudmVyY2VsLmFwcCJ9",
+    "signature": "6AuFH1auI6RP+mHOLaSY3joTZHpfQRi+oPMGGdaXirhtJA/O/PmPQ3K4vK072RqYiMhd36+N1EmyMLRYLDJBMxw="
   }
 }
