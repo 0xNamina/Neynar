@@ -1,0 +1,22 @@
+{
+  "frame": {
+    "name": "Neynar Score Checker",
+    "version": "1",
+    "iconUrl": "https://neynar.vercel.app/icon.png",
+    "homeUrl": "https://neynar.vercel.app",
+    "imageUrl": "https://neynar.vercel.app/image.png",
+    "buttonTitle": "Open mini app",
+    "splashImageUrl": "https://neynar.vercel.app/splash.png",
+    "splashBackgroundColor": "#6200EA",
+    "webhookUrl": "https://neynar.vercel.app/api/webhook",
+    "subtitle": "Check your Farcaster account quality score",
+    "description": "Quickly check your Neynar user score on Farcaster",
+    "primaryCategory": "developer-tools",
+    "tags": [],
+    "tagline": "Check Your Farcaster Score",
+    "ogTitle": "My Neynar Score",
+    "ogDescription": "Check your Farcaster account quality score with Neynar Score Checker",
+    "ogImageUrl": "https://neynar.vercel.app/og-image.png",
+    "castShareUrl": "https://neynar.vercel.app"
+  }
+}
