@@ -1,11 +1,10 @@
-import { createCanvas } from 'canvas'
-import fetch from 'node-fetch'
+import { ImageResponse } from '@vercel/og'
 
-export default async function handler(req, res) {
-  const { fid } = req.query
+export default async function handler(req) {
+  const { fid } = req.nextUrl.searchParams
 
   if (!fid) {
-    return res.status(400).json({ error: 'FID required' })
+    return new Response('FID required', { status: 400 })
   }
 
   try {
@@ -21,14 +20,14 @@ export default async function handler(req, res) {
     )
 
     if (!response.ok) {
-      return res.status(404).json({ error: 'User not found' })
+      return new Response('User not found', { status: 404 })
     }
 
     const data = await response.json()
     const user = data.users[0]
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' })
+      return new Response('User not found', { status: 404 })
     }
 
     const score = user.experimental?.neynar_user_score || 0
@@ -56,111 +55,201 @@ export default async function handler(req, res) {
       percentile = 'Top 27.5k'
     }
 
-    // Create canvas
-    const width = 1200
-    const height = 630
-    const canvas = createCanvas(width, height)
-    const ctx = canvas.getContext('2d')
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(135deg, #6200EA 0%, #5E35B1 100%)',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+          }}
+        >
+          {/* Top White Section */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              background: '#FFFFFF',
+              padding: '40px',
+            }}
+          >
+            {/* Profile Picture */}
+            <img
+              src={user.pfp_url}
+              alt="profile"
+              style={{
+                width: '120px',
+                height: '120px',
+                borderRadius: '50%',
+                marginBottom: '20px',
+                border: '4px solid #6200EA',
+              }}
+            />
 
-    // Background gradient
-    const gradient = ctx.createLinearGradient(0, 0, width, height)
-    gradient.addColorStop(0, '#6200EA')
-    gradient.addColorStop(1, '#5E35B1')
-    ctx.fillStyle = gradient
-    ctx.fillRect(0, 0, width, height)
+            {/* Display Name */}
+            <div
+              style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                color: '#000000',
+                marginBottom: '8px',
+              }}
+            >
+              {user.display_name || user.username}
+            </div>
 
-    // Top section - Profile
-    ctx.fillStyle = '#FFFFFF'
-    ctx.fillRect(0, 0, width, 250)
+            {/* Username */}
+            <div
+              style={{
+                fontSize: '24px',
+                color: '#666666',
+              }}
+            >
+              @{user.username}
+            </div>
+          </div>
 
-    // Profile picture (circle)
-    const profileSize = 120
-    const profileX = width / 2 - profileSize / 2
-    const profileY = 50
-    
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(profileX + profileSize / 2, profileY + profileSize / 2, profileSize / 2, 0, Math.PI * 2)
-    ctx.clip()
-    
-    // Try to load profile image
-    try {
-      const img = new (await import('canvas')).Image()
-      img.src = user.pfp_url
-      ctx.drawImage(img, profileX, profileY, profileSize, profileSize)
-    } catch (e) {
-      // Fallback: draw placeholder circle
-      ctx.fillStyle = '#6200EA'
-      ctx.fillRect(profileX, profileY, profileSize, profileSize)
-    }
-    ctx.restore()
+          {/* Bottom Purple Section */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: 1,
+              padding: '40px',
+              gap: '20px',
+            }}
+          >
+            {/* Score Label */}
+            <div
+              style={{
+                fontSize: '14px',
+                fontWeight: 'bold',
+                color: '#CCCCCC',
+                letterSpacing: '2px',
+              }}
+            >
+              NEYNAR SCORE
+            </div>
 
-    // Display name
-    ctx.fillStyle = '#000000'
-    ctx.font = 'bold 36px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText(user.display_name || user.username, width / 2, profileY + profileSize + 50)
+            {/* Score Number */}
+            <div
+              style={{
+                fontSize: '80px',
+                fontWeight: 'bold',
+                color: scoreColor,
+              }}
+            >
+              {scoreDisplay}
+            </div>
 
-    // Username
-    ctx.fillStyle = '#666666'
-    ctx.font = '24px Arial'
-    ctx.fillText(`@${user.username}`, width / 2, profileY + profileSize + 90)
+            {/* Score Label Badge */}
+            <div
+              style={{
+                background: '#F3E8FF',
+                color: '#6200EA',
+                padding: '8px 24px',
+                borderRadius: '20px',
+                fontSize: '18px',
+                fontWeight: 'bold',
+              }}
+            >
+              {scoreLabel}
+            </div>
 
-    // Bottom section - Stats
-    // Score display
-    ctx.fillStyle = '#FFFFFF'
-    ctx.fillRect(0, 250, width, height - 250)
+            {/* Stats Row */}
+            <div
+              style={{
+                display: 'flex',
+                gap: '40px',
+                marginTop: '20px',
+                width: '100%',
+                justifyContent: 'center',
+              }}
+            >
+              {/* FID */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  padding: '20px 40px',
+                  borderRadius: '12px',
+                  minWidth: '200px',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: '#CCCCCC',
+                    marginBottom: '8px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  FID
+                </div>
+                <div
+                  style={{
+                    fontSize: '32px',
+                    fontWeight: 'bold',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  {user.fid}
+                </div>
+              </div>
 
-    ctx.fillStyle = '#999999'
-    ctx.font = 'bold 14px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText('NEYNAR SCORE', width / 2, 310)
-
-    // Score number
-    ctx.fillStyle = scoreColor
-    ctx.font = 'bold 80px Arial'
-    ctx.fillText(scoreDisplay, width / 2, 420)
-
-    // Score label badge
-    ctx.fillStyle = '#F3E8FF'
-    ctx.fillRect(width / 2 - 80, 440, 160, 50)
-    ctx.fillStyle = '#6200EA'
-    ctx.font = 'bold 20px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText(scoreLabel, width / 2, 475)
-
-    // Stats row
-    const statsY = 530
-    
-    // FID box
-    ctx.fillStyle = '#F5F5F5'
-    ctx.fillRect(100, statsY, 400, 80)
-    ctx.fillStyle = '#666666'
-    ctx.font = 'bold 14px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText('FID', 300, statsY + 25)
-    ctx.fillStyle = '#000000'
-    ctx.font = 'bold 32px Arial'
-    ctx.fillText(user.fid.toString(), 300, statsY + 60)
-
-    // Percentile box
-    ctx.fillStyle = '#F5F5F5'
-    ctx.fillRect(700, statsY, 400, 80)
-    ctx.fillStyle = '#666666'
-    ctx.font = 'bold 14px Arial'
-    ctx.textAlign = 'center'
-    ctx.fillText('PERCENTILE', 900, statsY + 25)
-    ctx.fillStyle = '#000000'
-    ctx.font = 'bold 32px Arial'
-    ctx.fillText(percentile, 900, statsY + 60)
-
-    // Convert to PNG and send
-    const buffer = canvas.toBuffer('image/png')
-    res.setHeader('Content-Type', 'image/png')
-    res.setHeader('Cache-Control', 'public, max-age=3600')
-    res.status(200).send(buffer)
+              {/* Percentile */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  padding: '20px 40px',
+                  borderRadius: '12px',
+                  minWidth: '200px',
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: '12px',
+                    color: '#CCCCCC',
+                    marginBottom: '8px',
+                    fontWeight: 'bold',
+                  }}
+                >
+                  PERCENTILE
+                </div>
+                <div
+                  style={{
+                    fontSize: '32px',
+                    fontWeight: 'bold',
+                    color: '#FFFFFF',
+                  }}
+                >
+                  {percentile}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ),
+      {
+        width: 1200,
+        height: 630,
+      }
+    )
   } catch (error) {
     console.error('Error:', error)
-    res.status(500).json({ error: 'Internal server error' })
+    return new Response('Error generating image', { status: 500 })
   }
 }
