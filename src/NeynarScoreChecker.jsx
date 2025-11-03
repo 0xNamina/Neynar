@@ -7,24 +7,23 @@ export default function NeynarScoreChecker() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
 
-  const checkScore = async () => {
-    if (!input.trim()) {
-      setError('Please enter FID or username');
-      return;
+  // Auto-load FID dari URL parameter saat component mount
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fid = params.get('fid');
+    if (fid) {
+      setInput(fid);
+      checkScoreWithFid(fid);
     }
+  }, []);
 
+  const checkScoreWithFid = async (fid) => {
     setLoading(true);
     setError('');
     setResult(null);
 
     try {
-      // Menentukan apakah input adalah FID (angka) atau username
-      const isFid = /^\d+$/.test(input.trim());
-      const endpoint = isFid 
-        ? `https://api.neynar.com/v2/farcaster/user/bulk?fids=${input.trim()}`
-        : `https://api.neynar.com/v2/farcaster/user/by_username?username=${input.trim()}`;
-
-      const response = await fetch(endpoint, {
+      const response = await fetch(`https://api.neynar.com/v2/farcaster/user/bulk?fids=${fid}`, {
         headers: {
           'accept': 'application/json',
           'api_key': 'NEYNAR_API_DOCS'
@@ -36,7 +35,57 @@ export default function NeynarScoreChecker() {
       }
 
       const data = await response.json();
-      const user = isFid ? data.users[0] : data.user;
+      const user = data.users[0];
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      setResult({
+        fid: user.fid,
+        username: user.username,
+        displayName: user.display_name,
+        pfpUrl: user.pfp_url,
+        score: user.experimental?.neynar_user_score || 0,
+      });
+    } catch (err) {
+      setError(err.message || 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const checkScore = async () => {
+    if (!input.trim()) {
+      setError('Please enter FID or username');
+      return;
+    }
+
+    const isFid = /^\d+$/.test(input.trim());
+    
+    if (isFid) {
+      checkScoreWithFid(input.trim());
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setResult(null);
+
+    try {
+      const response = await fetch(`https://api.neynar.com/v2/farcaster/user/by_username?username=${input.trim()}`, {
+        headers: {
+          'accept': 'application/json',
+          'api_key': 'NEYNAR_API_DOCS'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('User not found');
+      }
+
+      const data = await response.json();
+      const user = data.user;
 
       if (!user) {
         throw new Error('User not found');
@@ -60,12 +109,14 @@ export default function NeynarScoreChecker() {
     if (!result) return;
 
     const scoreDisplay = result.score.toFixed(2);
-    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score at:`;
-    const url = window.location.href;
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}?fid=${result.fid}`;
     
-    // Gunakan Farcaster intent untuk share (tetap dalam app)
-    const shareUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(url)}`;
-    window.open(shareUrl, '_blank');
+    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score:`;
+    
+    // Gunakan Farcaster intent untuk share dengan URL yang membawa parameter FID
+    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(shareUrl)}`;
+    window.open(warpcastUrl, '_blank');
   };
 
   const getScoreColor = (score) => {
