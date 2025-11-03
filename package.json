@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "farcaster-neynar-score",
   "version": "1.0.0",
   "private": true,
