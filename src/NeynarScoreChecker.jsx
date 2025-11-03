@@ -109,13 +109,12 @@ export default function NeynarScoreChecker() {
     if (!result) return;
 
     const scoreDisplay = result.score.toFixed(2);
-    const baseUrl = window.location.origin;
-    const shareUrl = `${baseUrl}/?fid=${result.fid}`;
+    const apiUrl = `${window.location.origin}/api/og?fid=${result.fid}`;
     
-    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score:`;
+    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}`;
     
-    // Share dengan direct URL (tanpa OG image dulu)
-    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(shareUrl)}`;
+    // Share dengan API endpoint yang punya OG tags
+    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(apiUrl)}`;
     window.open(warpcastUrl, '_blank');
   };
 
