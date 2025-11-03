@@ -32,14 +32,14 @@ export default function NeynarScoreChecker() {
       });
 
       if (!response.ok) {
-        throw new Error('User tidak ditemukan');
+        throw new Error('User not found');
       }
 
       const data = await response.json();
       const user = isFid ? data.users[0] : data.user;
 
       if (!user) {
-        throw new Error('User tidak ditemukan');
+        throw new Error('User not found');
       }
 
       setResult({
@@ -48,11 +48,10 @@ export default function NeynarScoreChecker() {
         displayName: user.display_name,
         pfpUrl: user.pfp_url,
         score: user.experimental?.neynar_user_score || 0,
-        followerCount: user.follower_count,
         followingCount: user.following_count
       });
     } catch (err) {
-      setError(err.message || 'Terjadi kesalahan');
+      setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -62,7 +61,7 @@ export default function NeynarScoreChecker() {
     if (!result) return;
 
     const scorePercentage = (result.score * 100).toFixed(1);
-    const text = `🎯 Neynar Score saya: ${scorePercentage}%\n\n@${result.username} | FID: ${result.fid}\n\nCek score kamu di:`;
+    const text = `🎯 My Neynar Score: ${scorePercentage}%\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score at:`;
     const url = window.location.href;
     
     // Gunakan Farcaster intent untuk share (tetap dalam app)
@@ -89,8 +88,8 @@ export default function NeynarScoreChecker() {
       <div className="max-w-md mx-auto pt-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Neynar Score</h1>
-          <p className="text-purple-200">Cek kualitas akun Farcaster kamu</p>
+          <h1 className="text-4xl font-bold text-white mb-2">Neynar Score Checker</h1>
+          <p className="text-purple-200">Check your Farcaster account quality</p>
         </div>
 
         {/* Search Box */}
@@ -106,7 +105,7 @@ export default function NeynarScoreChecker() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && checkScore()}
-                  placeholder="Contoh: 3 atau dwr.eth"
+                  placeholder="Example: 3 or dwr.eth"
                   className="w-full px-4 py-3 pr-12 border-2 border-purple-200 rounded-xl focus:outline-none focus:border-purple-500 transition-colors"
                 />
                 <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -124,7 +123,7 @@ export default function NeynarScoreChecker() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {loading ? 'Memuat...' : 'Cek Score'}
+              {loading ? 'Loading...' : 'Check Score'}
             </button>
           </div>
         )}
@@ -178,16 +177,9 @@ export default function NeynarScoreChecker() {
               </div>
 
               <div className="bg-gray-50 p-4 rounded-xl mb-6">
-                <div className="flex justify-between items-center">
-                  <div className="text-center flex-1">
-                    <div className="text-gray-600 text-sm mb-1">Followers</div>
-                    <div className="font-bold text-lg">{result.followerCount.toLocaleString()}</div>
-                  </div>
-                  <div className="w-px h-12 bg-gray-300"></div>
-                  <div className="text-center flex-1">
-                    <div className="text-gray-600 text-sm mb-1">Following</div>
-                    <div className="font-bold text-lg">{result.followingCount.toLocaleString()}</div>
-                  </div>
+                <div className="text-center">
+                  <div className="text-gray-600 text-sm mb-1">Following</div>
+                  <div className="font-bold text-lg">{result.followingCount.toLocaleString()}</div>
                 </div>
               </div>
 
@@ -198,7 +190,7 @@ export default function NeynarScoreChecker() {
                   className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all transform hover:scale-105 flex items-center justify-center"
                 >
                   <Share2 size={20} className="mr-2" />
-                  Share di Farcaster
+                  Share on Farcaster
                 </button>
                 
                 <button
@@ -209,7 +201,7 @@ export default function NeynarScoreChecker() {
                   }}
                   className="w-full bg-gray-100 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-200 transition-all"
                 >
-                  Cek User Lain
+                  Check Another User
                 </button>
               </div>
             </div>
@@ -218,7 +210,7 @@ export default function NeynarScoreChecker() {
 
         {/* Info */}
         <div className="text-center text-white text-sm mt-6 opacity-80">
-          <p>Score diupdate setiap minggu</p>
+          <p>Scores updated weekly</p>
           <p className="mt-1">Powered by Neynar API</p>
         </div>
       </div>
