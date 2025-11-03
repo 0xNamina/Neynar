@@ -11,7 +11,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "lucide-react": "^0.263.1",
-    "@farcaster/miniapp-sdk": "^0.0.13"
+    "@farcaster/miniapp-sdk": "latest"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
