@@ -59,8 +59,8 @@ export default function NeynarScoreChecker() {
   const handleShare = () => {
     if (!result) return;
 
-    const scorePercentage = (result.score * 100).toFixed(1);
-    const text = `🎯 My Neynar Score: ${scorePercentage}%\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score at:`;
+    const scoreDisplay = result.score.toFixed(2);
+    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score at:`;
     const url = window.location.href;
     
     // Gunakan Farcaster intent untuk share (tetap dalam app)
@@ -148,7 +148,7 @@ export default function NeynarScoreChecker() {
                   <span className="text-gray-600 text-sm font-semibold">NEYNAR SCORE</span>
                 </div>
                 <div className={`text-6xl font-bold ${getScoreColor(result.score)} mb-2`}>
-                  {(result.score * 100).toFixed(1)}
+                  {result.score.toFixed(2)}
                 </div>
                 <div className="inline-block px-4 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">
                   {getScoreLabel(result.score)}
@@ -174,8 +174,6 @@ export default function NeynarScoreChecker() {
                   </div>
                 </div>
               </div>
-
-             
 
               {/* Action Buttons */}
               <div className="space-y-3">
