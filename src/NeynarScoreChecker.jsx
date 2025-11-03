@@ -109,13 +109,14 @@ export default function NeynarScoreChecker() {
     if (!result) return;
 
     const scoreDisplay = result.score.toFixed(2);
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = `${baseUrl}?fid=${result.fid}`;
+    const baseUrl = window.location.origin;
+    const shareUrl = `${baseUrl}/?fid=${result.fid}`;
+    const ogUrl = `${baseUrl}/api/og?fid=${result.fid}`;
     
-    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}\n\nCheck your score:`;
+    const text = `🎯 My Neynar Score: ${scoreDisplay}\n\n@${result.username} | FID: ${result.fid}`;
     
-    // Gunakan Farcaster intent untuk share dengan URL yang membawa parameter FID
-    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(shareUrl)}`;
+    // Share dengan OG endpoint
+    const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(ogUrl)}`;
     window.open(warpcastUrl, '_blank');
   };
 
