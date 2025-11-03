@@ -48,7 +48,6 @@ export default function NeynarScoreChecker() {
         displayName: user.display_name,
         pfpUrl: user.pfp_url,
         score: user.experimental?.neynar_user_score || 0,
-        followingCount: user.following_count
       });
     } catch (err) {
       setError(err.message || 'An error occurred');
@@ -176,12 +175,7 @@ export default function NeynarScoreChecker() {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-xl mb-6">
-                <div className="text-center">
-                  <div className="text-gray-600 text-sm mb-1">Following</div>
-                  <div className="font-bold text-lg">{result.followingCount.toLocaleString()}</div>
-                </div>
-              </div>
+             
 
               {/* Action Buttons */}
               <div className="space-y-3">
